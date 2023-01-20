@@ -4,10 +4,11 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import pickle
 import os.path
+import re
 import base64
 import email
 import selenium as se
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 
 # Define the SCOPES. If modifying it, delete the token.pickle file.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
@@ -45,7 +46,7 @@ def getEmails():
 	#result = service.users().messages().list(userId='me').execute()
 
 	# We can also pass maxResults to get any number of emails. Like this:
-	result = service.users().messages().list(maxResults=20, userId='me').execute()
+	result = service.users().messages().list(maxResults=50, userId='me').execute()
 	messages = result.get('messages')
 	#print(messages)
 	# messages is a list of dictionaries where each dictionary contains a message id.
@@ -104,6 +105,12 @@ def getEmails():
 				body = soup.body()
 				print("Message: ", body)
 				print('\n*********************END OF DATA**************************')
+
+				urls = re.findall('"http://[a-zA-Z0-9_./?=-]*"', str(body))
+				for u in urls:
+					print(u)
+					print('\n\n\n')
+				
 
 
 				#parse resulted html and go to the wheel link
