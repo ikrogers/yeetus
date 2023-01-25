@@ -2,18 +2,28 @@
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from selenium.webdriver.chrome.options import Options
 import pickle
 import os.path
 import re
 import base64
+import time
 import email
-import selenium as se
+import selenium
+from selenium import webdriver
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
+import time
 from bs4 import BeautifulSoup, SoupStrainer
 
 # Define the SCOPES. If modifying it, delete the token.pickle file.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 def getEmails():
+ 	
+
 	# Variable creds will store the user access token.
 	# If no valid token found, we will create one.
 	creds = None
@@ -46,7 +56,7 @@ def getEmails():
 	#result = service.users().messages().list(userId='me').execute()
 
 	# We can also pass maxResults to get any number of emails. Like this:
-	result = service.users().messages().list(maxResults=50, userId='me').execute()
+	result = service.users().messages().list(maxResults=200, userId='me').execute()
 	messages = result.get('messages')
 	#print(messages)
 	# messages is a list of dictionaries where each dictionary contains a message id.
@@ -106,11 +116,25 @@ def getEmails():
 				print("Message: ", body)
 				print('\n*********************END OF DATA**************************')
 
-				urls = re.findall('"http://[a-zA-Z0-9_./?=-]*"', str(body))
-				for u in urls:
-					print(u)
-					print('\n\n\n')
+				urls = re.findall('http://[a-zA-Z0-9_./?=-]*', str(body))
+				options = Options()
+				options.add_argument("--user-data-dir=~/Documents/udata")
+				options.add_experimental_option("detach", True)
+				options.page_load_strategy = 'normal'
+				driver = webdriver.Chrome(options=options)
+				driver.get(urls[1])
+				time.sleep(2)
+
 				
+				selected = Select(driver.find_element(By.ID("wheelSongId")))
+
+				# select by visible text
+				#selected.select_by_visible_text('Misconfiguration Sensation Station: Atomic Snow')
+				selected.select_by_index(3)
+				# select by value 
+				#select.select_by_value('1')
+				print(driver.findElement(By.class_name("buttonSpotify")).isEmpty())
+				driver.findElement(By.class_name("buttonSpotify")).click()
 
 
 				#parse resulted html and go to the wheel link
@@ -124,3 +148,4 @@ def getEmails():
 
 
 getEmails()
+#TODO: Close all instances of chrome before starting another
