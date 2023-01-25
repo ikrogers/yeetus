@@ -27,6 +27,7 @@ def getEmails():
 	# Variable creds will store the user access token.
 	# If no valid token found, we will create one.
 	creds = None
+	
 
 	# The file token.pickle contains the user access token.
 	# Check if it exists
@@ -42,6 +43,7 @@ def getEmails():
 			print("penis")
 			creds.refresh(Request())
 		else:
+      #you get the json from https://console.cloud.google.com/apis/credentials/oauthclient/648008577517-klkrk260il3jmijk123prrn5iesi77a7.apps.googleusercontent.com?project=gmailfetch-374220
 			flow = InstalledAppFlow.from_client_secrets_file('client_secret_648008577517-klkrk260il3jmijk123prrn5iesi77a7.apps.googleusercontent.com.json', SCOPES)
 			creds = flow.run_local_server(port=0)
 
@@ -56,7 +58,7 @@ def getEmails():
 	#result = service.users().messages().list(userId='me').execute()
 
 	# We can also pass maxResults to get any number of emails. Like this:
-	result = service.users().messages().list(maxResults=200, userId='me').execute()
+	result = service.users().messages().list(maxResults=300, userId='me').execute()
 	messages = result.get('messages')
 	#print(messages)
 	# messages is a list of dictionaries where each dictionary contains a message id.
@@ -118,7 +120,7 @@ def getEmails():
 
 				urls = re.findall('http://[a-zA-Z0-9_./?=-]*', str(body))
 				options = Options()
-				options.add_argument("--user-data-dir=~/Documents/udata")
+				options.add_argument("--user-data-dir=C:\\Users\\Ilya Rogers\\Documents\\udata")
 				options.add_experimental_option("detach", True)
 				options.page_load_strategy = 'normal'
 				driver = webdriver.Chrome(options=options)
@@ -126,16 +128,15 @@ def getEmails():
 				time.sleep(2)
 
 				
-				selected = Select(driver.find_element(By.ID("wheelSongId")))
+				selected = Select(driver.find_element(By.ID,"wheelSongId"))
 
 				# select by visible text
 				#selected.select_by_visible_text('Misconfiguration Sensation Station: Atomic Snow')
 				selected.select_by_index(3)
 				# select by value 
 				#select.select_by_value('1')
-				print(driver.findElement(By.class_name("buttonSpotify")).isEmpty())
-				driver.findElement(By.class_name("buttonSpotify")).click()
-
+				driver.find_element(By.ID, "submit").submit()
+				driver.execute_script("connectWithSpotifyWheel()")
 
 				#parse resulted html and go to the wheel link
 				#use selenium to step through autorization
