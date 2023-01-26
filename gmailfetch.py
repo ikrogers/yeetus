@@ -12,6 +12,9 @@ import email
 import selenium
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait as wait
+from selenium.webdriver.support import expected_conditions as EC
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains
@@ -58,7 +61,7 @@ def getEmails():
 	#result = service.users().messages().list(userId='me').execute()
 
 	# We can also pass maxResults to get any number of emails. Like this:
-	result = service.users().messages().list(maxResults=300, userId='me').execute()
+	result = service.users().messages().list(maxResults=50, userId='me').execute()
 	messages = result.get('messages')
 	#print(messages)
 	# messages is a list of dictionaries where each dictionary contains a message id.
@@ -130,13 +133,14 @@ def getEmails():
 				
 				selected = Select(driver.find_element(By.ID,"wheelSongId"))
 
-				# select by visible text
-				#selected.select_by_visible_text('Misconfiguration Sensation Station: Atomic Snow')
+				# select by index
 				selected.select_by_index(3)
-				# select by value 
-				#select.select_by_value('1')
-				driver.find_element(By.ID, "submit").submit()
-				driver.execute_script("connectWithSpotifyWheel()")
+			
+		
+
+				#Find span with onclick action and click it - Works commented out for testing
+				#driver.find_element(By.XPATH, ".//span[contains(@onclick, 'connectWithSpotifyWheel();')]").click()
+
 
 				#parse resulted html and go to the wheel link
 				#use selenium to step through autorization
