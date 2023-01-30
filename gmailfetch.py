@@ -10,6 +10,7 @@ import base64
 import time
 import email
 import selenium
+import random
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait as wait
@@ -133,13 +134,14 @@ def getEmails():
 				
 				selected = Select(driver.find_element(By.ID,"wheelSongId"))
 
-				# select by index
-				selected.select_by_index(3)
+				# select by random index - crude implementation
+				list = [1,2,3,4,5,6,7,8,9]
+				selected.select_by_index(random.choice(list))
 			
 		
 
 				#Find span with onclick action and click it - Works commented out for testing
-				#driver.find_element(By.XPATH, ".//span[contains(@onclick, 'connectWithSpotifyWheel();')]").click()
+				driver.find_element(By.XPATH, ".//span[contains(@onclick, 'connectWithSpotifyWheel();')]").click()
 
 
 				#parse resulted html and go to the wheel link
