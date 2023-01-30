@@ -48,12 +48,13 @@ def getEmails():
 			creds.refresh(Request())
 		else:
       #you get the json from https://console.cloud.google.com/apis/credentials/oauthclient/648008577517-klkrk260il3jmijk123prrn5iesi77a7.apps.googleusercontent.com?project=gmailfetch-374220
-			flow = InstalledAppFlow.from_client_secrets_file('client_secret_648008577517-klkrk260il3jmijk123prrn5iesi77a7.apps.googleusercontent.com.json', SCOPES)
+			flow = InstalledAppFlow.from_client_secrets_file('client_secret_648008577517-klkrk260il3jmijk123prrn5iesi77a7.apps.googleusercontent.com(2).json', SCOPES)
 			creds = flow.run_local_server(port=0)
 
 		# Save the access token in token.pickle file for the next run
 		with open('token.pickle', 'wb') as token:
 			pickle.dump(creds, token)
+
 
 	# Connect to the Gmail API
 	service = build('gmail', 'v1', credentials=creds)
@@ -62,7 +63,7 @@ def getEmails():
 	#result = service.users().messages().list(userId='me').execute()
 
 	# We can also pass maxResults to get any number of emails. Like this:
-	result = service.users().messages().list(maxResults=50, userId='me').execute()
+	result = service.users().messages().list(maxResults=100, userId='me').execute()
 	messages = result.get('messages')
 	#print(messages)
 	# messages is a list of dictionaries where each dictionary contains a message id.
@@ -119,7 +120,7 @@ def getEmails():
 				# do 'pip install lxml' or youll get parse error
 				soup = BeautifulSoup(decoded_data , "lxml")
 				body = soup.body()
-				print("Message: ", body)
+				#print("Message: ", body)
 				print('\n*********************END OF DATA**************************')
 
 				urls = re.findall('http://[a-zA-Z0-9_./?=-]*', str(body))
@@ -142,17 +143,24 @@ def getEmails():
 
 				#Find span with onclick action and click it - Works commented out for testing
 				driver.find_element(By.XPATH, ".//span[contains(@onclick, 'connectWithSpotifyWheel();')]").click()
-
-
+				time.sleep(5)
+				driver.quit()
+				
+				#time.sleep(7200)
 				#parse resulted html and go to the wheel link
 				#use selenium to step through autorization
 				#pick static song for now eventually read in whole list and pick randon one
 				#spin wheel till you cant
 				#remove email
+				#https://developers.google.com/gmail/api/reference/rest/v1/users.messages/trash
+				service.users().messages().trash(userId='me', id=msg['id']).execute()
 
 		except:
+			print("Exception thrown")
 			pass
 
 
+
+#while True:
 getEmails()
 #TODO: Close all instances of chrome before starting another
